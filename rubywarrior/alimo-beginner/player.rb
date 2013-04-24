@@ -43,22 +43,17 @@ class Attack
 end
 
 class Rest
-  FIFTY_PERCENT = 0.5
+  def initialize(good_health = GoodHealth.new)
+    @good_health = good_health
+  end
 
   def matches(warrior)
     @initial_health ||= warrior.health
-    warrior.feel.empty? == false && health_is_low(warrior)
+    warrior.feel.empty? == false && @good_health.matches(warrior) == false
   end
 
   def play(warrior)
     warrior.rest!
-  end
-
-  private
-
-  def health_is_low(warrior)
-    threshold = FIFTY_PERCENT * @initial_health
-    warrior.health <= threshold
   end
 end
 

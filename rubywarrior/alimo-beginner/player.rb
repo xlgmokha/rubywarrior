@@ -1,4 +1,5 @@
 class Player
+  FIFTY_PERCENT = 0.5
   def play_turn(warrior)
     @initial_health ||= warrior.health
     if warrior.feel.empty?
@@ -10,8 +11,7 @@ class Player
   end
 
   def health_is_low(warrior)
-    threshold = 0.5 * @initial_health
-    p "threshold is #{threshold}, initial health: #{@initial_health}, current: #{warrior.health}"
+    threshold = FIFTY_PERCENT * @initial_health
     warrior.health <= threshold
   end
 end

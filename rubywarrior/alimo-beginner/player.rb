@@ -1,12 +1,16 @@
 class Player
   FIFTY_PERCENT = 0.5
+
   def play_turn(warrior)
     @initial_health ||= warrior.health
     if warrior.feel.empty?
       warrior.walk!
     else
-      warrior.rest! if health_is_low(warrior)
-      warrior.attack!
+      if health_is_low(warrior)
+        warrior.rest!
+      else
+        warrior.attack!
+      end
     end
   end
 

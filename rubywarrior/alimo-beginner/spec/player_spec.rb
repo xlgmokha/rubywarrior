@@ -42,18 +42,23 @@ describe Player do
 
     context "when our health reaches 50%" do
       let(:starting_health) { 20 }
+      let(:new_warrior) { fake }
 
       before :each do
         warrior.stub(:health).and_return(starting_health)
         player.play_turn(warrior)
-      end
 
-      it "should step back and rest" do
-        new_warrior = fake
         new_warrior.stub(:health).and_return(starting_health * 0.5)
         new_warrior.stub(:feel).and_return(space)
         player.play_turn(new_warrior)
+      end
+
+      it "should step back and rest" do
         new_warrior.should have_received(:rest!)
+      end
+
+      it "should not attack" do
+        new_warrior.should_not have_received(:attack!)
       end
     end
   end

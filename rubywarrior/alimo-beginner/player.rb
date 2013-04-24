@@ -1,27 +1,23 @@
 class Player
 
   def initialize
-    @actions = [Rest.new, Attack.new, Walk.new]
+    @behaviours = [Rest.new, Attack.new, Walk.new]
   end
 
   def play_turn(warrior)
     @initial_health ||= warrior.health
-    @actions.each do |action|
-      action.play(warrior) if action.can(warrior)
+    @behaviours.each do |action|
+      action.play(warrior) if action.matches(warrior)
     end
   end
 end
 
-class Attack
+class GoodHealth
   FIFTY_PERCENT = 0.5
 
-  def can(warrior)
+  def matches(warrior)
     @initial_health ||= warrior.health
-    warrior.feel.empty? == false && health_is_good(warrior)
-  end
-
-  def play(warrior)
-    warrior.attack!
+    health_is_good(warrior)
   end
 
   private
@@ -32,10 +28,24 @@ class Attack
   end
 end
 
+class Attack
+  def initialize(good_health = GoodHealth.new)
+    @good_health = good_health
+  end
+
+  def matches(warrior)
+    warrior.feel.empty? == false && @good_health.matches(warrior)
+  end
+
+  def play(warrior)
+    warrior.attack!
+  end
+end
+
 class Rest
   FIFTY_PERCENT = 0.5
 
-  def can(warrior)
+  def matches(warrior)
     @initial_health ||= warrior.health
     warrior.feel.empty? == false && health_is_low(warrior)
   end
@@ -53,7 +63,7 @@ class Rest
 end
 
 class Walk
-  def can(warrior)
+  def matches(warrior)
     warrior.feel.empty?
   end
 

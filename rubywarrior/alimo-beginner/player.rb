@@ -5,7 +5,6 @@ class Player
   end
 
   def play_turn(warrior)
-    @initial_health ||= warrior.health
     @behaviours.each do |action|
       action.play(warrior) if action.matches(warrior)
     end
@@ -48,8 +47,7 @@ class Rest
   end
 
   def matches(warrior)
-    @initial_health ||= warrior.health
-    warrior.feel.empty? == false && @good_health.matches(warrior) == false
+    !warrior.feel.empty? && !@good_health.matches(warrior)
   end
 
   def play(warrior)

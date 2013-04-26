@@ -2,11 +2,27 @@ class Player
 
   def initialize
     @behaviours = [Rest.new, Attack.new, Walk.new]
+    @current_state = Resting.new
   end
 
   def play_turn(warrior)
-    @behaviours.each do |action|
-      action.play(warrior) if action.matches(warrior)
+    @current_state.play(warrior)
+  end
+end
+
+class Resting
+  def initialize(good_health = GoodHealth.new)
+    @good_health = good_health
+    @behaviours = [Attack.new, Walk.new]
+  end
+
+  def play(warrior)
+    if @good_health.matches(warrior)
+      @behaviours.each do |action|
+        action.play(warrior) if action.matches(warrior)
+      end
+    else
+      Rest.new(@good_health).play(warrior)
     end
   end
 end

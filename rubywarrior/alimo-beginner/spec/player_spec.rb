@@ -8,6 +8,7 @@ describe Player do
 
   context "when there is no obstacle in the way" do
     let(:space) { OpenStruct.new(:empty? => true) }
+    before { warrior.stub(:health).and_return(20) }
 
     it "should walk forward" do
       warrior.stub(:feel).and_return(space)
@@ -60,6 +61,11 @@ describe Player do
       it "should not attack" do
         new_warrior.should_not have_received(:attack!)
       end
+    end
+  end
+  context "when health is low" do
+    it "should stay resting" do
+      
     end
   end
 end

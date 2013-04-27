@@ -6,7 +6,6 @@ describe Player do
   let(:sut) { Player.new }
   let(:warrior) { fake }
 
-
   context "when there is no obstacle" do
     let(:feeling) { fake }
 
@@ -15,10 +14,24 @@ describe Player do
       feeling.stub(:empty?).and_return(true)
     end
 
-    before { sut.play_turn(warrior) }
+    context "when your health is full" do
+      before { warrior.stub(:health).and_return(20) }
 
-    it "should walk" do
-      warrior.should have_received(:walk!)
+      before { sut.play_turn(warrior) }
+
+      it "should walk" do
+        warrior.should have_received(:walk!)
+      end
+    end
+
+    context "when your health is low" do
+      before { warrior.stub(:health).and_return(19) }
+
+      before { sut.play_turn(warrior) }
+
+      it "should rest" do
+        warrior.should have_received(:rest!)
+      end
     end
   end
 
@@ -30,10 +43,26 @@ describe Player do
       feeling.stub(:empty?).and_return(false)
     end
 
-    before { sut.play_turn(warrior) }
+    context "when your health is full" do
+      before :each do
+        warrior.stub(:health).and_return(20)
+      end
 
-    it "should attack the sludge" do
-      warrior.should have_received(:attack!)
+      before { sut.play_turn(warrior) }
+
+      it "should attack the sludge" do
+        warrior.should have_received(:attack!)
+      end
+    end
+
+    context "when your health is low" do
+      before :each do
+        warrior.stub(:health).and_return(19)
+      end
+      it "should walk backwards then rest" do
+        sut.play_turn(warrior)
+        warrior.should have_received(:walk!, :backward)
+      end
     end
   end
 end
